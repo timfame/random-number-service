@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/timfame/random-number-service/grpc"
 	"os"
-	"randomNumberService/grpc"
 	"sync"
 	"time"
 )

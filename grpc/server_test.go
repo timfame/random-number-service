@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 	"github.com/stretchr/testify/require"
+	"github.com/timfame/random-number-service/generator"
 	"google.golang.org/grpc"
-	"randomNumberService/generator"
 	"sync"
 	"testing"
 	"time"

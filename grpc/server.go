@@ -3,10 +3,11 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"github.com/timfame/random-number-service/generator"
+	"github.com/timfame/random-number-service/mt"
 	"google.golang.org/grpc"
 	"net"
-	"randomNumberService/generator"
-	"randomNumberService/mt"
+
 	"sync"
 )
 
