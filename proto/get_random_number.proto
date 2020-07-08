@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package rng_service;
+
+option go_package = "./generator";
+
+service RandomNumberGenerator {
+    rpc GetRandomNumbers (RandomNumbersRequest) returns (RandomNumbersResponse) {}
+}
+
+message RandomNumbersRequest {
+    uint32 number = 1;
+    uint32 max = 2;
+}
+
+message RandomNumbersResponse {
+    repeated uint32 numbers = 1;
+}
