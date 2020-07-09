@@ -49,12 +49,24 @@ func TestRandom(t *testing.T) {
 	server, err := StartServer(&wg, WithPort(8008), WithSeed(uint64(time.Now().Unix())))
 	require.NoError(t, err)
 
-	for i := 0; i < 1000; i++ {
-		response, err := server.GetRandomNumbers(context.Background(), &generator.RandomNumbersRequest{
-			Number: 10000,
-			Max:    1000,
-		})
-		require.NoError(t, err)
-		require.Equal(t, 10000, len(response.Numbers))
+	var testClients sync.WaitGroup
+	testClients.Add(100)
+
+	for g := 0; g < 100; g++ {
+		go func() {
+			for i := 0; i < 100; i++ {
+				response, err := server.GetRandomNumbers(context.Background(), &generator.RandomNumbersRequest{
+					Number: 1000,
+					Max:    1000,
+				})
+				require.NoError(t, err)
+				require.Equal(t, 1000, len(response.Numbers))
+			}
+			testClients.Done()
+		}()
 	}
+	testClients.Wait()
+
+	server.Stop()
+	wg.Wait()
 }

@@ -1,5 +1,9 @@
 package mt
 
+import (
+	"sync"
+)
+
 const (
 	w             uint64 = 64
 	n             uint64 = 312
@@ -22,6 +26,7 @@ const (
 type MT struct {
 	numbers [n]uint64
 	step    uint64
+	mu      *sync.RWMutex
 }
 
 func New(opts ...Option) *MT {
@@ -34,6 +39,7 @@ func New(opts ...Option) *MT {
 	}
 
 	result := &MT{
+		mu:   &sync.RWMutex{},
 		step: n - 1,
 	}
 
@@ -45,11 +51,18 @@ func New(opts ...Option) *MT {
 }
 
 func (mt *MT) Next() uint64 {
+	mt.mu.Lock()
 	mt.step++
 	if mt.step >= n {
 		mt.twist()
 	}
-	return tempering(mt.numbers[mt.step])
+	mt.mu.Unlock()
+
+	mt.mu.RLock()
+	x := mt.numbers[mt.step]
+	mt.mu.RUnlock()
+
+	return tempering(x)
 }
 
 func (mt *MT) twist() {
