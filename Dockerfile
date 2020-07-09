@@ -1,12 +1,22 @@
-FROM golang
+FROM golang:alpine AS builder
 
-WORKDIR $GOPATH/src/github.com/timfame/random_number_service
+RUN apk update && apk add --no-cache git
 
-COPY . .
+RUN mkdir /build
 
-RUN go get -v -u ./...
+ADD . /build/
+
+WORKDIR /build
+
+RUN go get -d -v
 
 RUN go build -o main .
+
+FROM alpine
+
+COPY --from=builder /build/main/ /app/
+
+WORKDIR /app 
 
 EXPOSE 8008
 
