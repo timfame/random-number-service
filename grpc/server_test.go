@@ -41,3 +41,20 @@ func TestNewServer(t *testing.T) {
 	})
 	require.Error(t, err)
 }
+
+func TestRandom(t *testing.T) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	server, err := StartServer(&wg, WithPort(8008), WithSeed(uint64(time.Now().Unix())))
+	require.NoError(t, err)
+
+	for i := 0; i < 1000; i++ {
+		response, err := server.GetRandomNumbers(context.Background(), &generator.RandomNumbersRequest{
+			Number: 10000,
+			Max:    1000,
+		})
+		require.NoError(t, err)
+		require.Equal(t, 10000, len(response.Numbers))
+	}
+}

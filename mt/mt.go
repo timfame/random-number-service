@@ -46,7 +46,7 @@ func New(opts ...Option) *MT {
 
 func (mt *MT) Next() uint64 {
 	mt.step++
-	if mt.step == n {
+	if mt.step >= n {
 		mt.twist()
 	}
 	return tempering(mt.numbers[mt.step])
